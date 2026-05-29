@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Para Ema 💗</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #ffd6e7, #fff0f6);
+    height: 100vh;
+    touch-action: manipulation;
+}
+
+.screen {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    color: #ff4f87;
+    font-size: clamp(2rem, 6vw, 3rem);
+    margin-bottom: 40px;
+    text-align: center;
+    padding: 0 20px;
+}
+
+button {
+    padding: 16px 34px;
+    margin: 12px;
+    border: none;
+    border-radius: 18px;
+    background: #ff6fa5;
+    color: white;
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    cursor: pointer;
+    transition: 0.25s;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+button:hover {
+    transform: scale(1.08);
+    background: #ff4f87;
+}
+
+.heart {
+    position: absolute;
+    color: rgba(255,255,255,0.7);
+    font-size: 22px;
+    animation: floatHeart linear infinite;
+}
+
+@keyframes floatHeart {
+    from {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-10vh);
+        opacity: 1;
+    }
+}
+
+#numbersContainer {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+.number {
+    position: absolute;
+    width: clamp(55px, 14vw, 70px);
+    height: clamp(55px, 14vw, 70px);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ff4f87;
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.number:hover {
+    transform: scale(1.12);
+}
+
+#pickText {
+    position: absolute;
+    top: 30px;
+    width: 100%;
+    text-align: center;
+    color: #ff4f87;
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    font-weight: bold;
+}
+
+.messageBox {
+    max-width: 700px;
+    padding: 40px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.85);
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.messageText {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    color: #ff4f87;
+    line-height: 1.5;
+}
+
+.secretTitle {
+    font-size: 2.6rem;
+    color: gold;
+    margin-bottom: 25px;
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px gold;
+    }
+    to {
+        text-shadow: 0 0 25px orange;
+    }
+}
+
+.backBtn {
+    margin-top: 35px;
+    font-size: 1.2rem;
+}
+
+.smallText {
+    margin-top: 15px;
+    color: #ff7ca8;
+    font-size: 1.3rem;
+}
+@media (max-width: 768px) {
+    .messageBox {
+        width: 88%;
+        padding: 28px;
+    }
+
+    .backBtn {
+        width: 80%;
+    }
+
+    button {
+        width: 75%;
+        max-width: 320px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<!-- SCREEN 1 -->
+<div class="screen" id="startScreen">
+    <h1>¿Cómo te sientes hoy, Ema?</h1>
+    <div>
+        <button onclick="showLovePage()">Bien 💖</button>
+        <button onclick="startNumbersGame()">No estoy bien 💔</button>
+    </div>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen hidden" id="loveScreen">
+    <div class="messageBox">
+        <div class="messageText">
+            Bueno… solo quiero que sepas que te amo 💗
+        </div>
+        <div class="smallText">
+            Y siempre lo haré.
+        </div>
+        <button class="backBtn" onclick="goHome()">⬅ Volver</button>
+    </div>
+</div>
+
+<!-- SCREEN 3 -->
+<div class="screen hidden" id="numbersScreen">
+    <div id="pickText">¡Elige un número que te guste!</div>
+    <div id="numbersContainer"></div>
+</div>
+
+<!-- SCREEN 4 -->
+<div class="screen hidden" id="messageScreen">
+    <div class="messageBox" id="messageBoxContent"></div>
+</div>
+
+<script>
+const pickupLines = [
+    "Contigo, hasta los días normales se sienten especiales 💗",
+    "Eres mi lugar favorito en el mundo ✨",
+    "Tu sonrisa debería ser patrimonio mundial 😌",
+    "Si pudiera elegir otra vez, te elegiría siempre 💖",
+    "Haces que mi corazón se sienta en casa 🏡",
+    "Tus abrazos son mi lugar seguro 🥺",
+    "Me gustas incluso más cuando haces tonterías 😂💗",
+    "Cada día contigo se siente como una pequeña aventura ✨",
+    "No sabía que alguien podía hacerme tan feliz 💞",
+    "Eres literalmente mi persona favorita 💌",
+    "Si fueras canción, serías mi favorita todo el año 🎵",
+    "A veces te miro y no entiendo cómo tuve tanta suerte 🍀",
+    "Tu voz tiene el poder de arreglar mi día ☀️",
+    "No necesito magia cuando estoy contigo ✨",
+    "Eres el plot twist favorito de mi vida 💫",
+    "Incluso mis pensamientos felices tienen tu nombre 💭💗",
+    "Tú haces que todo se sienta más bonito 🌸",
+    "Mi lugar favorito siempre será contigo 🫶",
+    "No sé cómo lo haces, pero siempre me haces sonreír 😊",
+    "Tu existencia mejora automáticamente mi día 💖",
+    "Contigo aprendí que el amor puede sentirse tranquilo 🌙",
+    "Te elegiría incluso en otra vida 💌",
+    "Me haces sentir querida incluso en silencio 🥺",
+    "Eres mi pensamiento favorito antes de dormir 🌙",
+    "Tu risa debería ser oficialmente terapéutica 😂💗",
+    "Si felicidad tuviera cara, tendría la tuya ☀️",
+    "Todo se siente más fácil cuando estás conmigo 🌷",
+    "No sabía que alguien podía sentirse como hogar 🏡",
+    "Tus mensajes siempre mejoran mi día 📱💞",
+    "Eres mi coincidencia favorita ✨",
+    "Gracias por existir, honestamente 💗",
+    "Tú conviertes momentos pequeños en recuerdos enormes 🌸",
+    "Qué suerte tiene mi corazón de haberte encontrado 💖",
+    "No quiero un final feliz si no es contigo 💫",
+    "Tu cariño se siente como una mantita calentita 🥺",
+    "Mi corazón literalmente sonríe cuando apareces 💌",
+    "Si pudiera abrazarte ahora mismo, lo haría 🫂",
+    "Eres demasiado adorable para este planeta 🌍💗",
+    "Amo incluso las pequeñas cosas que haces ✨",
+    "Tú eres mi lugar seguro favorito 💞"
+];
+
+const secretMessages = {
+    28: "You like my birth date right! I LOVE YOU! 💗",
+    29: "Yes boy I love your birth date as well! You are my favorite gift of the world! 💖",
+    38: "That's my lucky number. Now you will be lucky too! ✨"
+};
+
+function hideAllScreens() {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.add('hidden');
+    });
+}
+
+function goHome() {
+    hideAllScreens();
+    document.getElementById('startScreen').classList.remove('hidden');
+}
+
+function showLovePage() {
+    hideAllScreens();
+    document.getElementById('loveScreen').classList.remove('hidden');
+}
+
+function startNumbersGame() {
+    hideAllScreens();
+    document.getElementById('numbersScreen').classList.remove('hidden');
+
+    const container = document.getElementById('numbersContainer');
+    container.innerHTML = '';
+
+    // 确保至少出现一个特殊数字
+    const specialNums = [28, 29, 38];
+    const guaranteedSpecial = specialNums[Math.floor(Math.random() * specialNums.length)];
+
+    const numbers = [guaranteedSpecial];
+
+    while (numbers.length < 10) {
+        const randomNum = Math.floor(Math.random() * 100) + 1;
+
+        if (!numbers.includes(randomNum)) {
+            numbers.push(randomNum);
+        }
+    }
+
+    numbers.forEach(num => {
+
+        const div = document.createElement('div');
+        div.className = 'number';
+        div.innerText = num;
+
+        div.style.left = Math.random() * 85 + 'vw';
+        div.style.top = 15 + Math.random() * 70 + 'vh';
+
+        let moveX = (Math.random() - 0.5) * 0.4;
+        let moveY = (Math.random() - 0.5) * 0.4;
+
+        setInterval(() => {
+            let x = parseFloat(div.style.left);
+            let y = parseFloat(div.style.top);
+
+            x += moveX;
+            y += moveY;
+
+            if (x < 0 || x > 90) moveX *= -1;
+            if (y < 10 || y > 85) moveY *= -1;
+
+            div.style.left = x + 'vw';
+            div.style.top = y + 'vh';
+        }, 50);
+
+        div.onclick = () => {
+            showMessage(num);
+        };
+
+        container.appendChild(div);
+    });
+}
+
+function showMessage(num) {
+    hideAllScreens();
+    document.getElementById('messageScreen').classList.remove('hidden');
+
+    const box = document.getElementById('messageBoxContent');
+
+    if (secretMessages[num]) {
+        box.innerHTML = `
+            <div class="secretTitle">🎁 Premio secreto 🎁</div>
+            <div class="messageText">${secretMessages[num]}</div>
+            <button class="backBtn" onclick="startNumbersGame()">⬅ Volver</button>
+        `;
+    } else {
+        const line = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+
+        box.innerHTML = `
+            <div class="messageText">${line}</div>
+            <button class="backBtn" onclick="startNumbersGame()">⬅ Volver</button>
+        `;
+    }
+}
+
+function createHearts() {
+    const hearts = document.getElementById('hearts');
+
+    for (let i = 0; i < 25; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = '💗';
+
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (5 + Math.random() * 8) + 's';
+        heart.style.fontSize = (18 + Math.random() * 20) + 'px';
+
+        hearts.appendChild(heart);
+    }
+}
+
+createHearts();
+</script>
+
+</body>
+</html>
